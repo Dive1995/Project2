@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <!-- Compiled and minified CSS -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+     <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-app.js"></script>
+     <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-auth.js"></script>
+     <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-firestore.js"></script>
+     <script src="https://www.gstatic.com/firebasejs/7.20.0/firebase-storage.js"></script>
+
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Inuvil Public Library</title>
+
+    <style>
+
+        body{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 1.2rem;
+            margin:0;
+            padding: 0;
+        }
+
+        .hr{
+            background-color: rgb(122, 74, 74,0.7);
+            height: 5px;
+            opacity: 0.5;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        nav {
+            height: 100px;
+            line-height: 100px; 
+        }
+
+        .image{
+            align-items: center;
+        }
+        .slides{
+                height: 600px!important;   
+        }
+
+        .slider{
+                height: 600px!important;
+                
+            }
+            .name p{
+                font-size: 20px;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                color: rgb(75, 77, 77);
+                line-height: 1rem ;
+            }
+        
+
+        .modal { 
+            width: 30% !important ; 
+            height: 60% !important ;
+            z-index: 4;
+            border-radius: 10px; 
+            
+        }
+        .modal .input-field i{
+            color: grey;
+        }
+       .modal label{
+           color: grey;
+       }
+        .modal .container{
+            width: 90%;
+
+        }
+        /* .action{
+            position: absolute;
+            bottom: 0px !important;
+        } */
+        .section{
+            margin-top: 5vw;
+        }
+        .most-popular{
+            padding-left: 5%;
+            padding-right: 5%;
+        }
+        
+        .popular-book{
+            display: flex;
+            overflow-x: auto;
+        }
+        .popular-book img{
+            width: 9rem;
+            height:12rem; 
+            /* width: 150px;
+            height:260px;  */
+        }
+
+        .popular-book::-webkit-scrollbar{
+            width: 0;
+        }
+
+        .book-1{
+            padding: 20px;
+            margin: auto;
+        
+        }
+        .book-1 img{
+            border-radius: 10px;
+        }.book-1 p{
+            float: center;
+        }
+        /* .crd{
+            max-width: 15% !important;
+            border: 0.5px solid rgba(85, 85, 85, 0.4);
+            border-radius: 10px;
+            padding: 20px !important;
+            
+        } */
+        /* .crd{
+            border: 0.5px solid rgb(211, 211, 211,0.4);
+            border-radius: 10px;
+            z-index: 1 !important;
+        } */
+        .mimage{
+            border-radius:10px !important;
+             padding:10px;
+        }
+        .footer{
+            line-height: 2rem;
+        }
+       
+        @media only screen and (max-width : 500px){
+            #title{
+               
+               
+            }
+            .modal { width: 80% !important ; height: 50% !important ; }
+            
+        }
+
+        @media (max-width: 400px){
+            .modal { width: 90% !important ; height: 50% !important ; }
+            
+        }
+
+        .card{
+            border-radius: 10px !important;
+            z-index: 2 !important;
+        }
+        .card-title{
+            border-radius: 10px !important;
+        }
+        .card-overlay {
+            background: rgba(0, 0, 0, 0.3);
+            }
+        .category{
+            /* border: 0.5px solid rgb(197, 196, 196,0.3); */
+            padding: 5px;
+        }
+        .cat-content{
+            padding: 10px;
+            border: 0.5px solid rgb(197, 196, 196,0.3);
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .crd{
+            border-radius: 10px;
+            padding: 1%;
+            margin-top: 3%;
+            margin-bottom: 3%;
+            
+            box-sizing: border-box;
+        }
+        .card-image{
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .cat-content:hover {
+            background-color: rgb(212, 212, 212) !important;
+            }
+    </style>
+    <!-- This line adds jquery to the page, otherwise the script tags at the bottom will not run -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Google Translate Element begin -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en', includedLanguages: 'en,ta',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <style type="text/css">
+        /* OVERRIDE GOOGLE TRANSLATE WIDGET CSS BEGIN */
+        div#google_translate_element div.goog-te-gadget-simple {
+            border: none;
+            background-color: transparent;
+            /*background-color: #17548d;*/ /*#e3e3ff*/
+        }
+
+        div#google_translate_element div.goog-te-gadget-simple a.goog-te-menu-value:hover {
+            text-decoration: none;
+        }
+
+        div#google_translate_element div.goog-te-gadget-simple a.goog-te-menu-value span {
+            color:white;
+        }
+
+        div#google_translate_element div.goog-te-gadget-simple a.goog-te-menu-value span:hover {
+            color: white;
+        }
+        
+        .goog-te-gadget-icon {
+            display: none !important;
+            /*background: url("url for the icon") 0 0 no-repeat !important;*/
+        }
+
+        /* Remove the down arrow */
+        /* when dropdown open */
+        div#google_translate_element div.goog-te-gadget-simple a.goog-te-menu-value span[style="color: rgb(213, 213, 213);"] {
+            display: none;
+        }
+        /* after clicked/touched */
+        div#google_translate_element div.goog-te-gadget-simple a.goog-te-menu-value span[style="color: rgb(118, 118, 118);"] {
+            display: none;
+        }
+        /* on page load (not yet touched or clicked) */
+        div#google_translate_element div.goog-te-gadget-simple a.goog-te-menu-value span[style="color: rgb(155, 155, 155);"] {
+            display: none;
+        }
+
+        /* Remove span with left border line | (next to the arrow) in Chrome & Firefox */
+        div#google_translate_element div.goog-te-gadget-simple a.goog-te-menu-value span[style="border-left: 1px solid rgb(187, 187, 187);"] {
+            display: none;
+        }
+        /* Remove span with left border line | (next to the arrow) in Edge & IE11 */
+        div#google_translate_element div.goog-te-gadget-simple a.goog-te-menu-value span[style="border-left-color: rgb(187, 187, 187); border-left-width: 1px; border-left-style: solid;"] {
+            display: none;
+        }
+        /* HIDE the google translate toolbar */
+        .goog-te-banner-frame.skiptranslate {
+            display: none !important;
+        }
+        body {
+            top: 0px !important;
+        }
+        /* OVERRIDE GOOGLE TRANSLATE WIDGET CSS END */
+    </style>
+
+</head>
+<body>
+    <hr class="hr">
+    <nav class="navbar white z-depth-0">
+        <div class="container ">
+            <a href="newIndex.html" class="col s12 l5 brand-logo image">
+                <div class="row">
+                    <div class="col l2 hide-on-med-and-down">
+                        <img width="70px" height="70px" src="images/logo2.jpg" alt="image" class="responsive-img">
+                    </div>
+                    <div class="col s12 l10 brown-text text-lighten-1 name">
+                        <p>Inuvil Public Library & Community Centre</p> 
+                        <p class="hide-on-med-and-down" id="tamil"> இணுவில் பொது நூலகம் சனசமூக நிலையம்</p>    
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="sidenav-trigger" data-target="side"><i class="material-icons brown-text text-lighten-1">menu</i></a>
+           
+            <ul class="right  hide-on-med-and-down ">
+                <li><a class="brown-text text-lighten-1" href="newIndex.html">Home</a></li>
+                <li><a class="brown-text text-lighten-1" href="#">Blog</a></li>
+                <li><a class="brown-text text-lighten-1" href="about.html">About</a></li>
+                <li class="account-details logged-in"></li>
+                
+                <li><a class="btn blue lighten-2 admin" style="display: none;" href="adminDashboard.html">Admin</a></li>
+                <li><a class="btn logged-out" style="display: none;" href="userlogin.html">Sign In</a></li>
+                <button type="submit" class="btn red logged-in" style="display: none;" id="logout">Log Out</button>
+            </ul>
+
+
+ 
+            <ul class="sidenav " id="side">
+                <li><a href="newIndex.html">Home</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="about.html">About</a></li>           
+                <li><a class="logged-in" href="adminDashboard.html">Admin</a></li>
+                <li><a class="" href="userlogin.html">Log In</a></li>           
+            </ul>
+        </div>
+       
+
+    </nav>
+
+  <div class="slider hide-on-med-and-down">
+    <ul class="slides">
+      <li>
+        <img src="https://images.unsplash.com/photo-1485322551133-3a4c27a9d925?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1950&q=80"> <!-- random image -->
+        <div class="caption center-align">
+          <h3>“The library is inhabited by spirits that come out of the pages at night.”
+        </h3>
+          <h5 class="light grey-text text-lighten-3">– Isabel Allende</h5>
+        </div>
+      </li>
+      <li>
+        <img src="https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1950&q=80"> <!-- random image -->
+        <div class="caption left-align">
+          <h3>“If you don’t like to read, you haven’t found the right book.”</h3>
+          <h5 class="light grey-text text-lighten-3">– J.K. Rowling</h5>
+        </div>
+      </li>
+      <li>
+        <img src="https://images.unsplash.com/photo-1457276587196-a9d53d84c58b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"> <!-- random image -->
+        <div class="caption right-align">
+          <h3>“A book is a version of the world. If you do not like it, ignore it; or offer your own version in return.”</h3>
+          <h5 class="light grey-text text-lighten-3">– Salman Rushdie</h5>
+        </div>
+      </li>
+      <li>
+        <img src="https://images.unsplash.com/photo-1596388631424-2929c72c5552?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"> <!-- random image -->
+        <div class="caption center-align">
+          <h3>“There is more treasure in books than in all the pirate’s loot on Treasure Island.”</h3>
+          <h5 class="light grey-text text-lighten-3">– Walt Disney</h5>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+<br>
+<br>
+<br>
+<div class="container">
+    Read What you are interested in
+    
+    <br>
+    <br>
+
+</div>
+<div class="container">
+    <div class="row">
+        <a href="books.html?category=science" class="col s6 l3 category center ">
+            <div class="cat-content z-depth-1 brown lighten-5 grey-text text-darken-3"> Science</div>
+           </a>
+        <a href="books.html?category=technology" class="col s6 l3 category center">
+           <div class="cat-content brown lighten-5 z-depth-1 grey-text text-darken-3">Technology</div> </a>
+        <a href="books.html?category=noval" class="col s6 l3 category center">
+           <div class="cat-content brown lighten-5 z-depth-1 grey-text text-darken-3">Noval</div> </a>
+        <a href="books.html?category=stories" class="col s6 l3 category center">
+            <div class="cat-content brown lighten-5 z-depth-1 grey-text text-darken-3">Short Stories</div></a>
+        <a href="books.html?category=literature" class="col s6 l3 category center">
+            <div class="cat-content brown lighten-5 z-depth-1 grey-text text-darken-3">Litrature</div></a>
+        <a href="books.html?category=religious" class="col s6 l3 category center">
+            <div class="cat-content brown lighten-5 z-depth-1 grey-text text-darken-3">Religious</div></a>
+        <a href="books.html?category=poetry" class="col s6 l3 category center">
+            <div class="cat-content brown lighten-5 z-depth-1 grey-text text-darken-3">Poetry</div></a>
+    </div>
+</div>
+
+ <div class="section  lighten-4" style="background-image: linear-gradient(120deg, rgba(233, 233, 233, 0), rgba(202, 202, 202, 0.2), rgb(224, 224, 224,0.9))">
+    
+        <div class=" most-popular ">
+   
+            <div class=" ">
+                <hr>
+              <h5 style="padding: 2%;" class="grey-text text-darken-3">New Arrivals</h5>
+            </div>
+          
+          
+          <div class="  " >
+              <div class="row  popular-book"  id="popular-book"></div>
+          </div>
+        
+    </div>
+    
+ </div>
+
+ <!-- <div class="parallax-container">
+    <div class="parallax">
+        <img src="https://www.readitforward.com/wp-content/uploads/2015/04/paulo-coelho.jpg">
+        <div class="card-overlay">hello</div>
+    </div>
+  </div> -->
+
+
+  <div class="container events section">
+      <div class="row">
+          <div class="col s12 l5">
+            <img  class="responsive-img"  src="https://i.pinimg.com/736x/e5/94/b5/e594b5d6245e2843a086bad856c41bc7.jpg" alt="pre school" > 
+          </div>
+          <div class="col s12 l6 offset-l1">
+            <h5>Preschool</h5>
+            <span class="grey-text text-darken-3">The first step in the right direction</span>
+            <span style="font-size: 1rem;" class="grey-text text-darken-2">The first steps offers a rich and nurturing hands on program for toddlers and young children. We are committed to providing first class standards
+            in early childhood education and grooming young children into active life-long learners.
+            </span>
+          </div>
+      </div>
+
+      <div class="row">
+          
+          <div class="col s12 l5 offset-l1 ">
+            <h5>ICT Classes</h5>
+            <span class="grey-text text-darken-3">
+                New Batch starting for <em>Grade 10 & 11</em>  <br>           
+            </span>
+            <span style="font-size: 1rem;" class="grey-text text-darken-2">
+                Grade 10 - Thursday <br>
+                Grade 11 - Friday <br>
+                3.00 - 5.00p.m
+            </span>
+            <!-- <p class="grey-text text-darken-2">Grade 1-5 Kids Program ( Sundays 3.00pm - 5.30pm) <br><br> Grade 6 ICT Class ( Tuesday & Friday 6pm to 7pm) <br><br> Grade 7 ICT class ( Tuesday 6 pm to 7 pm Friday 5.30 pm to 6.30 pm) <br><br> Grade 8 ICT Class ( Tuesday & Saturday 6pm to 7 pm) <br><br> Grade 9 ICT Class ( Thursday & Saturday 6 pm to 7 pm)<br><br> Grade 10 & 11 ICT Class ( Monday & Wednesday 6 pm to 7 pm)
+                <br>
+            </p> -->
+          </div>
+          <div class="col s12 l5 offset-l1">
+            <img src="https://img.freepik.com/free-vector/senior-women-group-computer-class-older-people-retro-cartoon-poster-with-blackboard-laptops-vector-illustration_1284-19766.jpg?size=626&ext=jpg" alt="ICTclass" class="responsive-img">
+          </div>
+      </div>
+  </div>
+
+  <footer class="footer page-footer grey darken-2">
+       <div class="container">
+           <div class="row">
+               <div class="col s12 l5">
+                   <ul>
+                       <li><a href="#" class="white-text"><i class="material-icons left ">call</i>0212 241 930</a></li>
+                       <li><a href="#" class="white-text"><i class="material-icons left">email</i>inuvillibrary@gmail.com</a></li>
+                       <li><a href="#" class="white-text"><i class="material-icons left">access_time</i>09:00 : 17:30</a></li>
+                       
+                   </ul>
+             </div>
+             <div class="col s12 l6 offset-l1">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3932.574598757557!2d80.01573581496851!3d9.717300280503656!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3afe5485c5e41f71%3A0x43d348f857a580e4!2zSW51dmlsIFB1YmxpYyBMaWJyYXJ5IOCuh-Cuo-CvgeCuteCuv-CusuCvjSDgrqrgr4rgrqTgr4Eg4K6o4K-C4K6y4K6V4K6u4K-B4K6u4K-N!5e0!3m2!1sen!2slk!4v1598989840683!5m2!1sen!2slk" width="400" height="200" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+             </div>
+           </div>
+       </div>
+
+       <div class="footer-copyright grey darken-3">
+           <div class="container center-align">&copy; Inuvil Public Library</div>
+           <li><div id="google_translate_element" ></div></li>
+       </div>
+  </footer>
+<!-- 
+  <div id="google_translate_element"></div>
+
+  <script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+  }
+  </script>
+  
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+   -->
+
+    <script>
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    var firebaseConfig = {
+        apiKey: "AIzaSyDI0nLfNXsG5yNEZM8WbggMY9RxMgZUtn0",
+        authDomain: "library-41bea.firebaseapp.com",
+        databaseURL: "https://library-41bea.firebaseio.com",
+        projectId: "library-41bea",
+        storageBucket: "library-41bea.appspot.com",
+        messagingSenderId: "1032332789338",
+        appId: "1:1032332789338:web:d05ab9e93027d98ec37a63",
+        measurementId: "G-YG38KYW62Q"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+    </script>
+
+         <!-- Compiled and minified JavaScript -->
+         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+         
+         <script>
+             $(document).ready(function(){
+                 $('.sidenav').sidenav();
+                 $('.slider').slider();
+                 $('.modal').modal();
+                 $('.parallax').parallax();
+             });
+         </script>
+    <script src="index.js"></script>
+    <script src="loadBook.js"></script>
+
+</body>
+</html>
